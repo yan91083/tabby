@@ -4,9 +4,10 @@ setup(
     name="tabby",
     packages=find_packages(exclude=["tabby_tests"]),
     install_requires=[
+        "datasets",
         "dagster",
         "dagster-cloud",
-        "dagster-pandas"
+        "dagster-pandas",
     ],
     extras_require={"dev": ["dagster-webserver", "pytest"]},
 )
