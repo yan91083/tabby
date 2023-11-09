@@ -3,11 +3,10 @@ from pathlib import Path
 import modal
 from modal import Image, Mount, Secret, Stub, asgi_app, gpu, method
 import os
-import pandas as pd
 
 import asyncio
 
-GPU_CONFIG = gpu.A100()
+GPU_CONFIG = gpu.A10G()
 MODEL_ID =  os.environ.get("MODEL_ID", "TabbyML/StarCoder-3B")
 LAUNCH_FLAGS = ["serve", "--model", MODEL_ID, "--port", "8000", "--device", "cuda"]
 
@@ -28,7 +27,7 @@ def download_model():
 
 image = (
     Image.from_registry(
-        "tabbyml/tabby:0.5.0",
+        "tabbyml/tabby:0.5.4",
         add_python="3.11",
     )
     .dockerfile_commands("ENTRYPOINT []")
@@ -103,6 +102,7 @@ class Model:
         )
         from tabby_python_client.types import Response
         from tabby_python_client import errors
+        import pandas as pd
 
         if 'prediction' in row and not pd.isnull(row['prediction']):
             return None, None, None
@@ -139,6 +139,7 @@ class Model:
 @stub.local_entrypoint()
 async def main(language, file):
     import json
+    import pandas as pd
 
     print(MODEL_ID)
 
